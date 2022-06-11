@@ -1,0 +1,430 @@
+
+# Py_text_editor.txt 
+
+# packages:
+import numpy as np
+import os
+import re
+
+# Notes:
+# #1. 1st
+#     lets you deternine nun to split the original text
+# #2. 2nd
+#     creates the 2 half file.txt
+#     2 lists original1, original2 
+#	only original2 is used (original1- will be recreated in #3.
+# 3.  3rd
+#     manually append 1st half file.txt in python console = original1.txt eddited
+# #3.& #4 4th
+#         creates the list original1 (from the eddited file)
+#         appends lists original1, original2 
+#	  creates filnal.txt as version of original.txt
+# #5 5th
+#         use 'sel' to determine which files added to be removed 
+#		from the directory (all in same dir)
+#		 -sel
+# 			1. both text_half
+# 			2. path_text
+# 			3. all
+
+
+#  future work:
+# 1. also can split text based on 1st matching string
+# 2. findall and sub words at the end (editing final.txt)
+
+# /////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+#				General Coltrols
+#                              ------------------
+# steps:
+#switcher = {
+#	1: read_line_numbered,
+#	2: split_half,            # at this point eddit 1st half in console
+#	3: join_file,
+#	4: remove_extra
+#		}
+n = 4
+		
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#				function Coltrols
+#                              ------------------
+# 1. -----------------------------------------------------------------------
+path_text = 'your_path_file'
+# --------------------------------------------------------------------------
+# 2. ------------   ------   ---------   -----------   ------------   ------
+#path_text = 'your_path_file'
+line_num  = line_num_you_want_to_split_txt 
+half1     = 'half1_' 
+half2     = 'half2_' 
+# -- ------------   ------   ---------   -----------   ------------   ------
+# 3. ------------   ------   ---------   -----------   ------------   ------
+# in:
+#path_text = 'your_path_file'
+#half1     = 'half1_' 
+
+# input
+text_1st_half =  half1 + path_text
+# -- ------------   ------   ---------   -----------   ------------   ------
+# 4. ------------   ------   ---------   -----------   ------------   ------
+#path_text  = 'your_path_file'
+v_num      = '2'
+
+# --------------------------------------------------------------------------
+# 5. -----------------------------------------------------------------------
+# in 
+#half1     = 'half1_' 
+#half2     = 'half2_' 
+
+# -sel
+# 1. both text_half
+# 2. path_text
+# 3. all
+# anything will show os.scandir() but remove none
+
+# input
+#text_1st_half =  half1 + path_text
+
+# input
+#path_text      = 'your_path_file'
+#text_1st_half  = half1 + path_text
+text_2nd_half  = half2 + path_text
+sel            =7
+# --------------------------------------------------------------------------
+# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# /////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+# #####################################################################
+# 1.
+# Purpose: 
+#	to write line number next to each line 
+#		displayed in the console 
+#			output:
+#			->gives the total number of lines in the text
+#			->line number next to each line 
+# ==============================================  
+
+def read_line_numbered_text (path_text):
+
+	with open(path_text, 'r') as r:
+		
+		last_line_index = np.array([])
+		print('1'*20)
+		for i, line in enumerate(r.readlines()):
+			
+			last_line_index = np.append(last_line_index, i).max()
+			print(i,': ', line)
+			#print(i,': \n', line)
+		
+		
+		print('maximum line: ', last_line_index)
+		print('1'*20)
+			
+	return 
+
+# input:
+#path_text = 'your_path_file'
+ 
+# call fn:
+#read_line_numbered_text (path_text)
+
+
+# #####################################################################
+# 2.
+# Purpose: 
+#	to spit the file_original.txt 
+#		in to 2 parts 
+#		based on:
+#			line number
+#			or
+#			# LATER WILL BE ADDED (lines before 1st selected string & lines after)
+#			output:
+#			->file_original1.txt 
+#				& original1 (list)
+#			->file_original2.txt 
+#				& original2 (list)
+
+# ==============================================  
+
+def split_in_to_half (path_text, line_num, half1, half2 ):
+	
+	# names of new 1/2 files
+	new1 = half1 + path_text
+	new2 = half2 + path_text
+	
+	# creates emply file.txt to prep append upon
+	with open(new1,'w') as w:
+		w.write('')
+	with open(new2,'w') as w:
+		w.write('')
+	
+
+	# separates text in 2 lists (bofore & after line_num)
+	with open(path_text, 'r') as r:
+
+		original1 = np.array([])
+		original2 = np.array([])
+		
+		for i, line in enumerate(r.readlines()):
+
+			if i < line_num:
+				with open(new1,'a') as a: 
+
+					original1 = np.append(original1, line)
+					a.write(line)
+					#print(line)
+
+			else:
+				with open(new2,'a') as a: 
+
+					original2 = np.append(original2, line)
+					a.write(line)
+					#print(line)
+	
+	print('2'*20)
+	print('original1.shape: \n', original1.shape)
+	
+	# read the 2 splited 1/2 .txt
+	print('This is the 1st 1/2: \n')
+	with open(new1, 'r') as r:
+		print(r.read())
+	print('\nThis is the 2st 1/2: \n')
+
+	print('original2.shape: \n', original2.shape)
+	with open(new2, 'r') as r:
+		print(r.read())
+	print('2'*20)
+	
+	return original1, original2
+
+# input:
+#path_text = 'your_path_file'
+#line_num  = line_num_you_want_to_split_txt 
+#half1     = 'half1_' 
+#half2     = 'half2_' 
+ 
+# call fn:
+#original1, original2 = split_in_to_half (path_text, line_num, half1, half2 )
+
+# #####################################################################
+# AT THIS POINT:
+# APPEND IN CONSOLE TO THE 'half1_' 
+# ALL WANTED CHANGES
+# THE PROCEED TO #3
+# #####################################################################
+# #####################################################################
+# 3.
+# Purpose: 
+#	reads 1st appended file
+#		-> outputs a list original1 (list) (which is really the appended list
+#				
+# ==============================================  
+
+def text_to_list (text_1st_half, half1 ):
+	
+	# separates text in 2 lists (bofore & after line_num)
+	with open(text_1st_half, 'r') as r:
+
+		original1 = np.array([])
+		for i, line in enumerate(r.readlines()):
+
+			original1 = np.append(original1, line)
+			#print(line)
+
+	
+	print('3'*20)		
+	print('original1.shape: \n', original1.shape)
+	
+	# read the 1st splited 1/2 .txt
+	print('This is the 1st 1/2: \n')
+	with open(path_text, 'r') as r:
+		print(r.read())
+	print('3'*20)
+	
+	return original1
+
+# in:
+#path_text = 'your_path_file'
+#half1     = 'half1_' 
+
+# input
+#text_1st_half =  half1 + path_text
+
+# call fn:
+#original1= text_to_list (text_1st_half, half1 )
+
+
+# #####################################################################
+# #####################################################################
+# 4.
+# Purpose: 
+#	to join together back the 2 files.txt (1st appended + 2nd original)
+#		use same name as original + v_num (version number)
+#		check result
+
+# ==============================================  
+
+def file_joiner(path_text, original1, original2, v_num):
+
+	# names of new file
+	text = re.sub('.txt', '', path_text)
+	new = text+v_num+'.txt'              # name of new text
+	
+	# creates emply file.txt to prep append upon
+	with open(new,'w') as w:
+		w.write('')
+	
+	final_list = np.append(original1,original2)
+
+	with open(new, 'a') as a:
+		for line in final_list:
+			a.write(line)
+	
+	print('4'*20)
+	#print('This is the final_list: \n')
+	#print(final_list)
+
+	print('\nThis is the final file.txt:')
+	print('final_list.shape: \n', final_list.shape, '\n')
+	with open(new, 'r') as r:
+		print(r.read())
+	print('4'*20)
+
+	return
+
+# input
+#path_text  = 'your_path_file'
+#v_num      = '2'
+
+# call fn:
+#file_joiner(path_text, original1, original2, v_num)
+
+
+# #####################################################################
+
+# 5.
+# Purpose: 
+#	After checking and all looks good 
+#		this will remove original_version.txt and the 1/2 files.txt 
+#		or 
+#		just the 1/2 files.txt 
+#		or 
+#		just the original_version.txt 
+# ==============================================  
+
+def remove_extra_files (path_text, text_1st_half, text_2nd_half, sel):
+
+	def halfs ():
+		os.remove(text_1st_half)
+		os.remove(text_2nd_half)
+		return
+
+	def ori ():
+		os.remove(path_text)
+		return
+
+	def all ():
+		os.remove(text_1st_half)
+		os.remove(text_2nd_half)
+		os.remove(path_text)
+		return
+
+	def default ():
+		print("choose a 'sel' between 1 & 3")
+		return 
+
+	switcher = {
+		1: halfs,
+		2: ori,
+		3: all
+		}
+
+	def switch(sel):
+		switcher.get(sel, default)()
+		return
+	
+	switch(sel)
+
+	print('5'*20)
+	with os.scandir() as entries:
+		for entry in entries:
+			print(entry.name)
+			print(entry.stat().st_size)
+
+	print('5'*20)
+	
+	return
+
+# in 
+#half1     = 'half1_' 
+#half2     = 'half2_' 
+
+# -sel
+# 1. both text_half
+# 2. path_text
+# 3. all
+
+# input
+#text_1st_half =  half1 + path_text
+
+# input
+#path_text      = 'your_path_file'
+#text_1st_half  = half1 + path_text
+#text_2nd_half  = half2 + path_text
+#sel            =1
+
+# call fn:
+#remove_extra_files (path_text, text_1st_half, text_2nd_half, sel)
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+# $$$$$ Switch-Case to control the flow of this functions $$$$$$$$$$$$$$$
+
+#1
+def read_line_numbered():
+	read_line_numbered_text (path_text)
+	return
+#2
+def split_half():
+	original1, original2 = split_in_to_half (path_text, line_num, half1, half2 )
+	return
+#3
+def join_file():
+	original1, original2 = split_in_to_half (path_text, line_num, half1, half2 )
+	original1= text_to_list (text_1st_half, half1 )
+	file_joiner(path_text, original1, original2, v_num)
+	return
+#4
+def remove_extra():
+	remove_extra_files (path_text, text_1st_half, text_2nd_half, sel)
+	return
+
+def default ():
+	print("choose a 'sel' between 1 & 5")
+	return 
+
+switcher = {
+	1: read_line_numbered,
+	2: split_half,
+	3: join_file,
+	4: remove_extra
+		}
+
+def switch(n):
+	switcher.get(n, default)()
+	return
+	
+switch(n)
+
+
+# $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+
+
+
+
+
+
+
+
+
+
+
+
+
